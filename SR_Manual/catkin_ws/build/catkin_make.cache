@@ -1,0 +1,2 @@
+ros_term
+-DCATKIN_DEVEL_PREFIX=/home/kim/SR_Manual/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/kim/SR_Manual/catkin_ws/install -G Unix Makefiles

@@ -1,0 +1,137 @@
+SR Display manual
+author: medist4230@uos.ac.kr
+
+
+0. This manual is based on
+
+Ubuntu 18.04.6 (Bionic beaver)
+ROS 18.04 (melodic)
+Intel UHD Graphics 620
+
+
+(1~8 is based on vulkan-tutorial.com. If any error occurs, check https://vulkan-tutorial.com/)
+
+
+1. Vulkan API install (https://vulkan.lunarg.com/sdk/home#linux)
+
+wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.3.224-bionic.list https://packages.lunarg.com/vulkan/1.3.224/lunarg-vulkan-1.3.224-bionic.list
+sudo apt update
+sudo apt install vulkan-sdk
+
+
+2. Install packages (https://vulkan-tutorial.com/Development_environment#page_Linux)
+
+sudo apt install vulkan-tools
+sudo apt install libvulkan-dev
+sudo apt install vulkan-validationlayers-dev spirv-tools
+sudo apt-get update
+sudo apt-get install buiild-essential libx11-dev
+
+
+3. driver install (for intel graphic)
+
+sudo apt-get install mesa-vulkan-drivers
+
+
+4. Vulkan test
+
+vkcube
+vulkaninfo
+
+
+5. GLFW, GLM install
+
+sudo apt install libglfw3-dev
+sudo apt install libglm-dev
+
+
+6. Test window (blank window should be appeared)
+
+sudo apt install libxxf86vm-dev libxi-dev
+cd SR_Manual/1
+make test
+
+
+7. compile shaders (https://vulkan-tutorial.com/Drawing_a_triangle/Graphics_pipeline_basics/Shader_modules)
+
+cd SR_Manual/2/shaders
+sudo find / -name "glslc" 
+(check directory and edit SR_Manual/2/shaders/compile.sh)
+
+chmod +x compile.sh
+./compile.sh
+cd ..
+make test
+(triangle should be printed)
+
+
+8. model loading
+
+cd SR_Manual/3
+(Edit Makefile STB_INCLUDE_PATH and TINYOBJ_INCLUDE_PATH (to directory of stb_image.h and tiny_obj_loader.h))
+
+cd shaders
+(compile shader again (check compile.sh))
+
+cd ..
+make test
+(spinning model should be printed)
+
+
+9. install vision package
+
+sudo apt-get install ros-melodic-usb-cam
+sudo apt-get install ros-melodic-aruco-ros
+
+
+10. calibration
+
+cd SR_Manual/catkin_ws/src/ros_term/launch
+(edit usb_cam_stream_publisher width, height with your own camera)
+
+roslaunch usb_cam_stream_publisher.launch
+(if error occurs, change pixel format)
+
+(open other window)
+rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.0256 image:=/usb_cam/image_raw camera:=/usb_cam
+(0.0256 : square size(m), check rostopic for image_raw topic)
+
+
+11. edit program
+
+cd SR_Manual/catkin_ws/src/ros_term/src
+
+(edit shaders/compile.sh and compile shader)
+
+(edit main.cpp to change directory of stb_image.h and tiny_obj_loader.h)
+(edit '$' tagged parameters)
+
+
+12. run program
+
+catkin_make
+source setup.bash
+
+Window1
+roscore
+
+Window2
+cd SR_Manual/catkin_ws/src/ros_term/launch
+roslaunch usb_cam_stream_publisher.launch
+
+Window3
+cd SR_Manual/catkin_ws/src/ros_term/launch
+roslaunch aruco_marker_finder.launch
+
+Window4
+cd SR_Manual/catkin_ws/src/ros_term/launch
+rosrun ros_term main
+
+
+13. exit program
+
+alt+tab and close Vulkan window
+
+
+14. edit Parameters ('$' tagged)

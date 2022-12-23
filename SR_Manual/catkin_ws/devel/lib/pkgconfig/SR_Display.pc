@@ -1,0 +1,8 @@
+prefix=/home/kim/SR_Manual/catkin_ws/devel
+
+Name: SR_Display
+Description: Description of SR_Display
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
